@@ -1,6 +1,8 @@
 using Microsoft.VisualBasic;
 using System;
+using System.Diagnostics;
 using System.Net;
+using System.Net.NetworkInformation;
 
 namespace MyPlayrightSample
 {
@@ -18,15 +20,34 @@ namespace MyPlayrightSample
             try
             {
                 var httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri(@"http://www.google.com/");
+                httpClient.BaseAddress = new Uri(@"https://aws.amazon.com");
                 var request = new HttpRequestMessage(HttpMethod.Head, "");
                 var response = await httpClient.SendAsync(request);
 
+                //var interfaces = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
+
+
+                //var isConnected = interfaces.Where(face => face.OperationalStatus == OperationalStatus.Up &&
+                //                                 face.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                //                                 face.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                //                                 !face.Name.Contains("virtual"))
+                //    .Any(f => f.GetIPv4Statistics().BytesReceived > 0 && f.GetIPv4Statistics().BytesSent > 0);
+
+                //if (isConnected)
+                //{
+                //    return;
+                //}
+    
                 if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK)
                 {
                     return;
                 }
                 tryConnect = true;
+
+                Process[] chromeInstances = Process.GetProcessesByName("chrome");
+
+                foreach (Process p in chromeInstances)
+                    p.Kill();
             }
             catch (Exception e)
             {
@@ -36,16 +57,16 @@ namespace MyPlayrightSample
             try
             {
                 if (!tryConnect)
-                    return;
-
-               var response = await Page.GotoAsync("http://www.msftconnecttest.com/redirect");
+                    return; 
+                
+                var response = await Page.GotoAsync("http://www.msftconnecttest.com/redirect");
 
                if (response.Url.Contains(@"https://www.msn.com/da-dk?"))
                {
                    return;
                }
 
-               Thread.Sleep(5000);
+               Thread.Sleep(3000);
 
                // create a locator
                var agreeBtn = Page.Locator("id=chkAgree");
@@ -63,11 +84,11 @@ namespace MyPlayrightSample
             {
                 Console.WriteLine(e);
 
-                if (e.Message != null && e.Message.Contains(@"net::ERR_INTERNET_DISCONNECTED"))
-                {
+                //if (e.Message != null && e.Message.Contains(@"net::ERR_INTERNET_DISCONNECTED"))
+                //{
 
-                    return;
-                }
+                //    return;
+                //}
 
                 throw;
             }
