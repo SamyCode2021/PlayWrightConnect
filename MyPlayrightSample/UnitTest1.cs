@@ -10,6 +10,8 @@ namespace MyPlayrightSample
     [TestFixture]
     public class Tests : PageTest
     {
+        private int retryNr = 3;
+
         [Test]
         public async Task HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
         {
@@ -19,10 +21,12 @@ namespace MyPlayrightSample
 
             try
             {
-                var httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri(@"https://aws.amazon.com");
-                var request = new HttpRequestMessage(HttpMethod.Head, "");
-                var response = await httpClient.SendAsync(request);
+                var isConnected = await ISConnected();
+
+                if (isConnected)
+                {
+                    return;
+                }
 
                 //var interfaces = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
 
@@ -37,11 +41,8 @@ namespace MyPlayrightSample
                 //{
                 //    return;
                 //}
-    
-                if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK)
-                {
-                    return;
-                }
+
+
                 tryConnect = true;
 
                 Process[] chromeInstances = Process.GetProcessesByName("chrome");
@@ -79,6 +80,16 @@ namespace MyPlayrightSample
                var connectBtn = Page.Locator("id=openaccess");
 
                await connectBtn.ClickAsync();
+
+               Thread.Sleep(10000);
+
+               var isConnected = await ISConnected();
+
+               if (!isConnected && retryNr > 0)
+               {
+                   retryNr--;
+                   HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage();
+               }
             }
             catch (Exception e)
             {
@@ -92,6 +103,20 @@ namespace MyPlayrightSample
 
                 throw;
             }
+        }
+
+        private static async Task<bool> ISConnected()
+        {
+            var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(@"https://aws.amazon.com");
+            var request = new HttpRequestMessage(HttpMethod.Head, "");
+            var response = await httpClient.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.Accepted || response.StatusCode == HttpStatusCode.OK)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
