@@ -8,5 +8,7 @@ namespace MyPlayrightSample
 {
     internal class NetHelper
     {
+
+
     }
 }

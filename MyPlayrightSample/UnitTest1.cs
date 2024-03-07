@@ -16,49 +16,49 @@ namespace MyPlayrightSample
         public async Task HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
         {
 
-            Thread.Sleep(3000);
-            var tryConnect = false;
+            //Thread.Sleep(3000);
+            //var tryConnect = false;
+
+            //try
+            //{
+            //    var isConnected = await ISConnected();
+
+            //    if (isConnected)
+            //    {
+            //        return;
+            //    }
+
+            //    //var interfaces = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
+
+
+            //    //var isConnected = interfaces.Where(face => face.OperationalStatus == OperationalStatus.Up &&
+            //    //                                 face.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+            //    //                                 face.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+            //    //                                 !face.Name.Contains("virtual"))
+            //    //    .Any(f => f.GetIPv4Statistics().BytesReceived > 0 && f.GetIPv4Statistics().BytesSent > 0);
+
+            //    //if (isConnected)
+            //    //{
+            //    //    return;
+            //    //}
+
+
+            //    tryConnect = true;
+
+            //    Process[] chromeInstances = Process.GetProcessesByName("chrome");
+
+            //    foreach (Process p in chromeInstances)
+            //        p.Kill();
+            //}
+            //catch (Exception e)
+            //{
+            //    tryConnect = true;
+            //}
 
             try
             {
-                var isConnected = await ISConnected();
-
-                if (isConnected)
-                {
-                    return;
-                }
-
-                //var interfaces = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
-
-
-                //var isConnected = interfaces.Where(face => face.OperationalStatus == OperationalStatus.Up &&
-                //                                 face.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
-                //                                 face.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                //                                 !face.Name.Contains("virtual"))
-                //    .Any(f => f.GetIPv4Statistics().BytesReceived > 0 && f.GetIPv4Statistics().BytesSent > 0);
-
-                //if (isConnected)
-                //{
-                //    return;
-                //}
-
-
-                tryConnect = true;
-
-                Process[] chromeInstances = Process.GetProcessesByName("chrome");
-
-                foreach (Process p in chromeInstances)
-                    p.Kill();
-            }
-            catch (Exception e)
-            {
-                tryConnect = true;
-            }
-
-            try
-            {
-                if (!tryConnect)
-                    return; 
+                //if (!tryConnect)
+                //    return; 
                 
                 var response = await Page.GotoAsync("http://www.msftconnecttest.com/redirect");
 
