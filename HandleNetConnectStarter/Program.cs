@@ -4,6 +4,8 @@ using System.Net;
 
 int numberofTryConnetFail = 0;
 
+DateTime lastTimeConnected = DateTime.Now;
+
 static async Task<bool> ISConnected()
 {
     try
@@ -40,6 +42,8 @@ void ExecuteCommand()
     numberofTryConnetFail++;
     Console.WriteLine("Finished process Connection ...");
 
+    lastTimeConnected = DateTime.Now;
+
     //int ExitCode;
     //ProcessStartInfo ProcessInfo;
     //Process Process;
@@ -68,12 +72,13 @@ while (true)
         {
             var isConnected = await ISConnected();
 
+            var remaingTime = DateTime.Now - lastTimeConnected;
             if (isConnected)
             {
                 numberofTryConnetFail = 0;
          
-                Console.WriteLine("Connection found - skip connection...");
-                Thread.Sleep(30000);
+                Console.WriteLine("Connection skipped.. Connection Up-Time (hh:mm:ss): " + remaingTime.Hours +":"+ remaingTime.Minutes + ":" + remaingTime.Seconds);
+                Thread.Sleep(50000);
                 continue;
             }
             tryConnect = true;
@@ -86,10 +91,12 @@ while (true)
                 return;
             }
 
-            Process[] chromeInstances = Process.GetProcessesByName("chrome");
+            Thread.Sleep(10000);
 
-            foreach (Process p in chromeInstances)
-                p.Kill();
+            //Process[] chromeInstances = Process.GetProcessesByName("chrome");
+
+            //foreach (Process p in chromeInstances)
+            //    p.Kill();
         }
         catch (Exception e)
         {
