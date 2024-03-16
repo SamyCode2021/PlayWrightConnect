@@ -28,8 +28,10 @@ static async Task<bool> ISConnected()
     return false;
 }
 
-void ExecuteCommand()
+void ExecuteConnectCommand()
 {
+    ExecuteKillVpnCommand();
+
     string programFiles = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
     var connectFile = Path.Combine(programFiles, @"Microsoft Visual Studio\2022\Professional\Common7\Tools\AutoConnect.bat");
 
@@ -60,6 +62,20 @@ void ExecuteCommand()
 
 }
 
+void ExecuteKillVpnCommand()
+{
+    try
+    {
+        Process[] chromeInstances = Process.GetProcessesByName("NordLayer");
+
+        foreach (Process p in chromeInstances)
+            p.Kill();
+    }
+    catch (Exception)
+    {
+    }
+}
+
 while (true)
 {
     Console.WriteLine("Process connection ...");
@@ -70,6 +86,7 @@ while (true)
 
         try
         {
+
             var isConnected = await ISConnected();
 
             var remaingTime = DateTime.Now - lastTimeConnected;
@@ -81,10 +98,18 @@ while (true)
                 Thread.Sleep(50000);
                 continue;
             }
+
+
+            if (remaingTime.Hours == 1)
+            {
+                ExecuteKillVpnCommand();
+            }
+
             tryConnect = true;
 
             if (numberofTryConnetFail == 5)
             {
+                Console.WriteLine("PC shutdown (5 tries have reached)...");
                 var p = System.Diagnostics.Process.Start("shutdown", "/s /t 240");
                 p.WaitForExit();
                 //p.Close();
@@ -93,10 +118,6 @@ while (true)
 
             Thread.Sleep(10000);
 
-            //Process[] chromeInstances = Process.GetProcessesByName("chrome");
-
-            //foreach (Process p in chromeInstances)
-            //    p.Kill();
         }
         catch (Exception e)
         {
@@ -105,7 +126,7 @@ while (true)
         }
 
         if(tryConnect)
-            ExecuteCommand();
+            ExecuteConnectCommand();
     }
     catch (Exception e)
     {
